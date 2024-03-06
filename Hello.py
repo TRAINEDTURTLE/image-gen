@@ -20,7 +20,11 @@ genai.configure(api_key=st.secrets["gemini_api_key"])
 LOGGER = get_logger(__name__)
 
 model = genai.GenerativeModel(model_name="gemini-1.0-pro")
-convo = model.start_chat
+convo = model.start_chat(
+    history = [
+
+    ]
+)
 
 def run():
     st.set_page_config(
@@ -31,14 +35,14 @@ def run():
     st.write("# Chat with an AI! 👋")
 
     input_text=st.text_area("What would you like to say?")
-    chat_button=st.button("Send")
+    chat_button=st.button("GO")
 
     if chat_button and input_text.strip() != "":
-        with st.spinner("Loading"):
-            convo.send_messsage(input_text)
+        with st.spinner("Loading..."):
+            convo.send_message(input_text)
             st.success(convo.last.text)
     else:
-        st.warning("please send something else")
+        st.warning("Please enter something")
 
 
 if __name__ == "__main__":
