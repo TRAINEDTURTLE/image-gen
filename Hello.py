@@ -12,39 +12,33 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+import google.generativeai as genai
 import streamlit as st
 from streamlit.logger import get_logger
 
+genai.configure(api_key=st.secrets["gemini_api_key"])
 LOGGER = get_logger(__name__)
 
+model = genai.GenerativeModel(model_name="gemini-1.0-pro")
+convo = model.start_chat
 
 def run():
     st.set_page_config(
-        page_title="Hello",
+        page_title="Gemini",
         page_icon="👋",
     )
+    st.title("Streamlit X Gemini")
+    st.write("# Chat with an AI! 👋")
 
-    st.write("# Welcome to Streamlit! 👋")
+    input_text=st.text_area("What would you like to say?")
+    chat_button=st.button("Send")
 
-    st.sidebar.success("Select a demo above.")
-
-    st.markdown(
-        """
-        Streamlit is an open-source app framework built specifically for
-        Machine Learning and Data Science projects.
-        **👈 Select a demo from the sidebar** to see some examples
-        of what Streamlit can do!
-        ### Want to learn more?
-        - Check out [streamlit.io](https://streamlit.io)
-        - Jump into our [documentation](https://docs.streamlit.io)
-        - Ask a question in our [community
-          forums](https://discuss.streamlit.io)
-        ### See more complex demos
-        - Use a neural net to [analyze the Udacity Self-driving Car Image
-          Dataset](https://github.com/streamlit/demo-self-driving)
-        - Explore a [New York City rideshare dataset](https://github.com/streamlit/demo-uber-nyc-pickups)
-    """
-    )
+    if chat_button and input_text.strip() != "":
+        with st.spinner("Loading"):
+            convo.send_messsage(input_text)
+            st.success(convo.last.text)
+    else:
+        st.warning("please send something else")
 
 
 if __name__ == "__main__":
